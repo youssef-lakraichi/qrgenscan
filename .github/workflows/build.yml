@@ -18,3 +18,14 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GIT_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '2.x'
+      - name: Cache dependencies
+        run: flutter pub get
+        
+      - name: Analyze with SonarCloud
+        run: |
+          flutter pub global activate sonar
+          flutter pub global run sonar:sonar -Dsonar.login=${{ secrets.SONAR_TOKEN }}
