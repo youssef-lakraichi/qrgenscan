@@ -30,9 +30,9 @@ jobs:
 
       - name: Run Dart Analyzer with SonarQube output
         run: |
-          pub global activate dart_style
-          pub global activate coverage
-          pub global activate melos
+          /opt/hostedtoolcache/flutter/stable-2.8.0-x64/bin/pub global activate dart_style
+          /opt/hostedtoolcache/flutter/stable-2.8.0-x64/bin/pub global activate coverage
+          /opt/hostedtoolcache/flutter/stable-2.8.0-x64/bin/pub global activate melos
           melos bootstrap
           melos run dartanalyzer --no-pub --no-to-json --format sonarqube
 
