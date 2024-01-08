@@ -5,16 +5,36 @@ on:
       - master
   pull_request:
     types: [opened, synchronize, reopened]
+
 jobs:
   sonarcloud:
     name: SonarCloud
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
         with:
-          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
-      - name: SonarCloud Scan
-        uses: SonarSource/sonarcloud-github-action@master
+          flutter-version: '2.8.0'  # Replace with the Flutter version you are using
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Build and analyze with SonarCloud
+        run: |
+          flutter analyze --no-pub --output-format=sonarqube > analysis_options.yaml
+          sonar-scanner -Dsonar.projectKey=your_project_key \
+                        -Dsonar.organization=your_organization \
+                        -Dsonar.sources=lib \
+                        -Dsonar.tests=test \
+                        -Dsonar.exclusions=**/test/** \
+                        -Dsonar.host.url=https://sonarcloud.io \
+                        -Dsonar.login=$SONAR_TOKEN \
+                        -Dsonar.language=dart \
+                        -Dsonar.dart.analyze.separately=true
         env:
-          GITHUB_TOKEN: ${{ secrets.GIT_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GIT_TOKEN }}  # Needed to get PR information, if any
+
