@@ -19,8 +19,8 @@ jobs:
         with:
           flutter-version: '2.8.0'  # Replace with the Flutter version you are using
 
-      - name: Add Dart SDK to PATH
-        run: echo "::add-path::$(flutter --version | grep -oE "Flutter [0-9]+\.[0-9]+\.[0-9]+" | cut -d' ' -f2)/bin"
+      - name: Set up Dart SDK in the PATH
+        run: echo "export PATH=$PATH:$(flutter --version | grep -oE "Flutter [0-9]+\.[0-9]+\.[0-9]+" | cut -d' ' -f2)/bin" >> $GITHUB_ENV
 
       - name: flutter upgrade
         run: flutter upgrade
