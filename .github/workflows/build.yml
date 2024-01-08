@@ -19,6 +19,9 @@ jobs:
         with:
           flutter-version: '3.0.0'  # Replace with the Flutter version you are using
 
+      - name: flutter upgrade
+        run: flutter upgrade
+        
       - name: Install dependencies
         run: flutter pub get
 
