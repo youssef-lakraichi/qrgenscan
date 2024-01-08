@@ -26,18 +26,16 @@ jobs:
         run: flutter pub get
 
       - name: Build and analyze with SonarCloud
+       - name: Run Dart Analyzer with SonarQube output
         run: |
-          flutter analyze --no-pub --output-format=sonarqube > analysis_options.yaml
-          sonar-scanner -Dsonar.projectKey=your_project_key \
-                        -Dsonar.organization=your_organization \
-                        -Dsonar.sources=lib \
-                        -Dsonar.tests=test \
-                        -Dsonar.exclusions=**/test/** \
-                        -Dsonar.host.url=https://sonarcloud.io \
-                        -Dsonar.login=$SONAR_TOKEN \
-                        -Dsonar.language=dart \
-                        -Dsonar.dart.analyze.separately=true
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          GITHUB_TOKEN: ${{ secrets.GIT_TOKEN }}  # Needed to get PR information, if any
+          pub global activate dart_style
+          pub global activate coverage
+          pub global activate melos
+          melos bootstrap
+          melos run dartanalyzer --no-pub --no-to-json --format sonarqube
 
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GIT_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
